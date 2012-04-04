@@ -1,8 +1,8 @@
 {
-    "name": "autocomplete",
+    "name": "guacho",
     "description": "Demonstration how to combine sockets and jquery ui autocomplete with mongodb",
     "version": "0.0.1",
-    
+
     "dependencies": {
         "express": "2.4.3",
         "stylus": ">= 0.0.1",
@@ -10,9 +10,9 @@
         "mongoose": ">= 0.0.1",
         "now":  ">=0.0.1"
      },
-     
+
      "author": {
         "name": "Dominic Bšttger",
-        "email": "Dominic.Boettger@inspirationlabs.com" 
+        "email": "Dominic.Boettger@inspirationlabs.com"
      }
 }
