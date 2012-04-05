@@ -1,7 +1,8 @@
 {
     "name": "guacho",
-    "description": "Demonstration how to combine sockets and jquery ui autocomplete with mongodb",
+    "description": "Hack to find your way in Buenos Aires",
     "version": "0.0.1",
+    "license": "agpl-3.0",
 
     "dependencies": {
         "express": "2.4.3",
@@ -12,7 +13,7 @@
      },
 
      "author": {
-        "name": "Dominic Bšttger",
-        "email": "Dominic.Boettger@inspirationlabs.com"
+        "name": "Niv Sardi",
+        "email": "xaiki@debian.org"
      }
 }

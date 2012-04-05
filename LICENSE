@@ -1,5 +1,3 @@
-# Based on Autocomplete node.js example
-
     This program is free software: you can redistribute it and/or
     modify it under the terms of the GNU Affero General Public License
     as published by the Free Software Foundation, either version 3 of
@@ -13,22 +11,3 @@
     You should have received a copy of the GNU Affero General Public
     License along with this program.  If not, see
     <http://www.gnu.org/licenses/agpl-3.0.html>.
-
-
-## Dependencies
-
-1. Node.js
-2. npm
-3. mongodb
-
-## Installation
-
-1. Check out this repository
-2. Open the terminal
-3. Change into the checkd out directory
-4. npm install ( Install the required dependencies )
-5. node app.js
-
-## How to use
-
-After that you should only open http://localhost:3000 to have a look at this demo application.
