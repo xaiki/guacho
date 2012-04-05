@@ -71,48 +71,25 @@ function simple_subst (s) {
     return s;
 }
 
-function validate_num (n, a) {
-	var i;
-	if (n == '') {
-		return true;
-	}
-
-	for (i = 0; i < a.length; i += 1) {
-		if (n >= a[i][0] && n <= a[i][1]) {
-			return true;
-		}
-	}
-
-	return false;
-}
-
 // now js search function
 everyone.now.search = function(text, count, callback) {
 	// create regex for "contains" and ignore case
-	var num = '';
-	var c     = text.term.split(/([0-9]+)$/);
-	if (c.length > 1) {
-		text.term = c[0];
-		num       = c[1];
-	}
-	var aregx = text.term.split(' ').map (function (e) {
+	var c     = text.term.split(/( [0-9]+)$/)[0];
+	var aregx = c.split(' ').map (function (e) {
 		return new RegExp(simple_escape(e), 'i');
 	});
-    // execute the search
-    Calle.find({name:{$all:aregx}}, function(err, docs) {
-	var names = [];
-	for(var nam in docs) {
-		var s  = docs[nam];
-		// push the firstname to the array
-		var l = [s.type, s.name, s.num].join(' ');
-		var ok = validate_num(num, s.num);
-		console.log('num: ' + num + '\n');
-		names.push({label:l, value:[s.name, num].join(' '),
-			    obj:s, num:num, ok:ok});
-	}
-	// send back via callback function
-	callback(null, names);
-    });
+	// execute the search
+	Calle.find({name:{$all:aregx}}, function(err, docs) {
+		var names = [];
+		for(var nam in docs) {
+			var s  = docs[nam];
+			// push the firstname to the array
+			var l = [s.type, s.name, s.num].join(' ');
+			names.push({label:l, value:s.name, obj:s});
+		}
+		// send back via callback function
+		callback(null, names);
+	});
 };
 
 // function to create our test content...

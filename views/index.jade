@@ -9,6 +9,7 @@
       each i in is
           | #{i}:
           input(type='text',   id='#{i}-input')
+          input(type='hidden', id='#{i}-val')
           input(type='hidden', id='#{i}-id')
           input(type='hidden', id='#{i}-num')
       input(type='submit', value='Submit')

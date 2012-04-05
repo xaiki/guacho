@@ -3,6 +3,7 @@ Proj4js.defs["SR-ORG:7124"] = "+proj=tmerc +lat_0=-34.6297166 +lon_0=-58.4627 +k
 Proj4js.reportError = function(msg) {alert(msg);};
 
 var map;
+var markers = {};
 var myloc = new Proj4js.Point (-58.3803787, -34.6136284);
 var toloc = new Proj4js.Point (-58.4627,-34.6297166);
 var dbgs = [];
@@ -46,6 +47,19 @@ function plot(map, a) {
     return marker
 }
 
+function panAB(a, b) {
+	var all = a.getPosition();
+	var bll = b.getPosition();
+
+	var b = new google.maps.LatLngBounds(all, bll);
+	if (b.isEmpty()) {
+		b = new google.maps.LatLngBounds(bll, all);
+	}
+	console.log(b, b.isEmpty(), all, bll);
+
+	map.panToBounds(b);
+}
+
 function plotB(latlng) {
 	console.log(latlng);
 	marker = new google.maps.Marker({
@@ -55,6 +69,24 @@ function plotB(latlng) {
 		position: latlng
 	});
 	return marker
+}
+
+function plotA(a) {
+	a.forEach(function (i) {
+		plotB (pt_to_latlng(i));
+	});
+}
+
+function plotP(e, name) {
+	var v = pt_to_latlng(e);
+	console.log(markers);
+	if (markers[name]) {
+		markers[name].setPosition(v);
+	} else {
+		markers[name] = plotB (v);
+	}
+
+	map.panTo(v);
 }
 
 function initialize() {
@@ -134,7 +166,6 @@ function trace_route(route) {
 		gml = route.plan[p].gml;
 		var dom = new DOMParser().parseFromString(gml,
 							  "text/xml");
-		//	D = gml;
 		if (! dom.getElementsByTagName ("coordinates" ).lenght) {
 			console.log (gml,' no coord');
 		}
@@ -199,6 +230,24 @@ function show_route(route) {
     p.innerHTML = buf;
 }
 
+function parrallel (requests, format, alldone) {
+	var done = requests.length;
+	var res  = [];
+
+	$(requests).each(function (i, e) {
+		$.getJSON(format(e), function(o) {
+			res[i] = o;
+			console.log (done, i, o, res[i]);
+			done -= 1;
+			if (done == 0) alldone(res);
+		});
+	});
+}
+
+function request_pos_url (e) {
+	return "http://ws.usig.buenosaires.gob.ar/geocoder/2.2/geocoding/?callback=?&cod_calle=" + e.id + "&altura=" + e.num;
+}
+
 function find() {
 	// Assign handlers immediately after making the request,
 	// and remember the jqxhr object for this request
@@ -211,6 +260,8 @@ function find() {
 	var to   = {id :$( "#to-id"   ).prop('value'),
 		    num:$( "#to-num"  ).prop('value')};
 
+	panAB (markers.from, markers.to);
+
 	console.log('DEBUG', from, to, '\n');
 
 	if (! (from.id && from.num)) {
@@ -222,19 +273,12 @@ function find() {
 		return;
 	}
 
-	$([from, to]).each(function (i, e) {
-		$.getJSON("http://ws.usig.buenosaires.gob.ar/geocoder/2.2/geocoding/?callback=?&cod_calle=" + e.id + "&altura=" + e.num, function(o) {
-			res[i] = o;
-			console.log (done, i, o, res[i]);
-			done -= 1;
-			if (done == 0) find2(res[0], res[1]);
-		});
-	});
+	parrallel([from, to], request_pos_url, find2);
 }
 
-function find2(from, to) {
-	plotB (pt_to_latlng(from));
-	plotB (pt_to_latlng(to));
+function find2(a) {
+	var from = a[0];
+	var to   = a[1];
 
 	$.getJSON('http://recorridos.mapa.buenosaires.gob.ar/recorridos_transporte?callback=?&origen=' + from.x + "%2C" + from.y + "&destino=" + to.x + "%2C" + to.y + "&origen_calles=3085&destino_calles=17132&origen_calle_altura=3599&destino_calle_altura=409&opciones_caminata=800&opciones_medios_colectivo=true&opciones_medios_tren=true&opciones_medios_subte=true", show_route);
 }
