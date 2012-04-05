@@ -20,13 +20,18 @@ var everyone = require("now").initialize(app);
 
 //Configuration
 app.configure(function(){
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'jade');
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(require('stylus').middleware({ src: __dirname + '/public' }));
-  app.use(app.router);
-  app.use(express.static(__dirname + '/public'));
+	var public_path = __dirname + '/public';
+	app.set('views', __dirname + '/views');
+	app.set('view engine', 'jade');
+	app.use(express.bodyParser());
+	app.use(express.methodOverride());
+	app.use(require('stylus')
+		.middleware({
+			src: public_path,
+			force: true,
+		}));
+	app.use(app.router);
+	app.use(express.static(public_path));
 });
 
 app.configure('development', function(){
@@ -44,21 +49,11 @@ app.get('/', function(req, res){
 	});
 });
 
-// now js search function
-everyone.now.search = function(text, count, callback) {
-    // create regex for "contains" and ignore case
-    var regex = new RegExp(text.term, 'i');
-    // execute the search
-    Calle.find({name: regex}, function(err, docs) {
-	var names = [];
-	for(var nam in docs) {
-	    // push the firstname to the array
-	    names.push(docs[nam].name);
-	}
-	// send back via callback function
-	callback(null, names);
-    });
-};
+
+function simple_escape( str ) {
+    return (str+'').replace(/([\\"'\(\)])/g, "\\$1").replace(/\0/g, "\\0");
+}
+
 
 function simple_subst (s) {
     var replace_reg = {
@@ -75,6 +70,50 @@ function simple_subst (s) {
 
     return s;
 }
+
+function validate_num (n, a) {
+	var i;
+	if (n == '') {
+		return true;
+	}
+
+	for (i = 0; i < a.length; i += 1) {
+		if (n >= a[i][0] && n <= a[i][1]) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+// now js search function
+everyone.now.search = function(text, count, callback) {
+	// create regex for "contains" and ignore case
+	var num = '';
+	var c     = text.term.split(/([0-9]+)$/);
+	if (c.length > 1) {
+		text.term = c[0];
+		num       = c[1];
+	}
+	var aregx = text.term.split(' ').map (function (e) {
+		return new RegExp(simple_escape(e), 'i');
+	});
+    // execute the search
+    Calle.find({name:{$all:aregx}}, function(err, docs) {
+	var names = [];
+	for(var nam in docs) {
+		var s  = docs[nam];
+		// push the firstname to the array
+		var l = [s.type, s.name, s.num].join(' ');
+		var ok = validate_num(num, s.num);
+		console.log('num: ' + num + '\n');
+		names.push({label:l, value:[s.name, num].join(' '),
+			    obj:s, num:num, ok:ok});
+	}
+	// send back via callback function
+	callback(null, names);
+    });
+};
 
 // function to create our test content...
 app.get('/create', function(req, res){

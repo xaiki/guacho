@@ -1,11 +1,22 @@
 #application
 
+  #info
+  #debug
   #search
-    div Search:
-    div 
-      input(type='text', id='search-input')
+    div He... a donde vas guacho ?
+    form(onsubmit='find();', action='#')
+      -var is = ["from", "to"]
+      each i in is
+          | #{i}:
+          input(type='text',   id='#{i}-input')
+          input(type='hidden', id='#{i}-id')
+          input(type='hidden', id='#{i}-num')
+      input(type='submit', value='Submit')
 
+  div#map_canvas
+     here goes map2
   script(type='text/javascript')
     head.ready(function() {
-        var auto = new AutocompleterAppView()
+        var auto = new AutocompleterAppView();
+        initialize();
     });
