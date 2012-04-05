@@ -1,5 +1,5 @@
 //
-Proj4js.defs["SR-ORG:7124"] = "+proj=tmerc +lat_0=-34.6297166 +lon_0=-58.4627 +k=0.9999980000000001 +x_0=100000 +y_0=100000 +ellps=intl +units=m +no_defs";
+Proj4js.defs["SR-ORG:7124"] = "+proj=tmerc +lat_0=-34.6297166 +lon_0=-58.4627 +k=0.9999980000000001 +x_0=100055 +y_0=100040 +ellps=intl +units=m +no_defs";
 Proj4js.reportError = function(msg) {alert(msg);};
 
 var map;
