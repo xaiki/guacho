@@ -1,3 +1,7 @@
+function simple_escape( str ) {
+    return (str+'').replace(/([\\"'\(\)])/g, "\\$1").replace(/\0/g, "\\0");
+}
+
 function validate_num (n, a) {
 	var i;
 	if (!n) return true;
@@ -12,6 +16,7 @@ function validate_num (n, a) {
 }
 
 function xa_autoc(e) {
+	var t = '';
 	var a = $('#' + e + '-input').autocomplete({
 		source: function(request, response){
 			now.search(request, 10,
@@ -47,17 +52,19 @@ function xa_autoc(e) {
 			return true;
 		},*/
 		minLength: 1,
-		autoFocus: true,
+		autoFocus: false,
 	});
 	a.data( "autocomplete" )._renderItem = function( ul, item ) {
-		var s = '', e = '';
-		/*		if (item.ok) {
-				s = '<b>'; e = '</b>';
-				} */
+		t = $( "#" + e + "-input" ).prop("value");
+		var text = "<a>" + item.obj.name + "<br>" +
+			item.obj.type + " " + item.obj.num + "</a>"
+		var r = new RegExp(simple_escape(t), 'i');
+
+		text = text.replace(r, '<span id="selection">' + t + '</span>');
+
 		return $( "<li></li>" )
 			.data( "item.autocomplete", item )
-			.append("<a>" + s + item.obj.name + e + "<br>" +
-				item.obj.type + " " + item.obj.num + "</a>")
+			.append(text)
 			.appendTo( ul );
 	};
 	console.log(a, a.data("autocomplete"));
