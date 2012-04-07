@@ -244,16 +244,29 @@ function trace_routeix(route) {
 
 function show_route(route) {
 	var p = document.getElementById("info");
-	var buf = "";
+	var buf;
 	var lg = route.planning;
 	routes = []
+
+	console.log ('show_route');
+
+	buf = '<div id="show_accordion">';
 	lg.forEach(function(item, i) {
 		routes.push(jQuery.parseJSON(item));
 		var dest = routes[i];
+		buf += '<h3><a href="#">' + dest.tiempo + "', Services: " + dest.services + '</a></h3>';
+		buf += '<div>';
 		buf += '<button type="button" onclick="show_rec(' + i + ')">Show</button>';
 		buf += dest.tiempo + '---' + dest.services + "<br>\n";
+		buf += '</div>';
 	});
+	buf += '</div>';
 	p.innerHTML = buf;
+
+	$('#show_accordion').accordion({
+		active: false,
+		autoHeight: false,
+	});
 }
 
 function parrallel (requests, format, alldone) {
