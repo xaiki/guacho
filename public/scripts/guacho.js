@@ -69,6 +69,11 @@ function plot(map, a) {
 }
 
 function panAB(a, b) {
+	if (!a || !b) {
+		debug ("error, no markers");
+		return false;
+	}
+
 	var all = a.getPosition();
 	var bll = b.getPosition();
 
