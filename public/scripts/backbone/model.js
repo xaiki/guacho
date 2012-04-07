@@ -2,6 +2,18 @@ function simple_escape( str ) {
     return (str+'').replace(/([\\"'\(\)])/g, "\\$1").replace(/\0/g, "\\0");
 }
 
+function get_num_name (str) {
+	return str.split(/ {1}([0-9]+)$/);
+}
+
+function get_num ( str ) {
+	return get_num_name (str)[1] || '';
+}
+
+function get_name ( str ) {
+	return get_num_name (str)[0] || '';
+}
+
 function validate_num (n, a) {
 	var i;
 	if (!n) return true;
