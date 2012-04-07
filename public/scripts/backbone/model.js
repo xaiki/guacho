@@ -28,11 +28,11 @@ function xa_autoc(e) {
 			return false;
 		},
 		change: function( event, ui ) {
-			var n = $( "#" + e + "-input" ).prop("value").split(/([0-9]+)$/)[1] + '';
+			var n = $( "#" + e + "-input" ).prop("value").split(/([0-9]+)$/)[1] || '';
 			$( "#" + e + "-num").val( n );
 		},
 		select: function( event, ui ) {
-			var n = $( "#" + e + "-input" ).prop("value").split(/([0-9]+)$/)[1] + '';
+			var n = $( "#" + e + "-input" ).prop("value").split(/([0-9]+)$/)[1] || '';
 			var k = {id: ui.item.obj.id, num: n};
 			ui.item.value += ' ' + n;
 			$( "#" + e + "-id" ).val( ui.item.obj.id );
