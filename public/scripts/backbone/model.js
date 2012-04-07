@@ -27,37 +27,76 @@ function validate_num (n, a) {
 	return false;
 }
 
+function validate (e) {
+	var k = {id :$( '#' + e + '-id' ).prop('value'),
+		 num:$( '#' + e + '-num').prop('value')};
+
+	console.log(e, k);
+	if (! (k.id && k.num) ) {
+		return false
+	}
+	return true;
+}
+
 function xa_autoc(e) {
+	var es = '#' + e;
 	var t = '';
-	var a = $('#' + e + '-input').autocomplete({
+	var num;
+	var a = $(es + '-input').autocomplete({
 		source: function(request, response){
+			$(es + '-input').animate({ backgroundColor: "white" }, 500);
+			if (request.term == e) return;
+
 			now.search(request, 10,
 				   function(err, results) {
 					   response(results);
+					   if (results.length == 0) {
+						   num = undefined;
+						   $( es + "-id" ).val( );
+						   $( es + "-num").val( );
+					   } else if (results.length == 1) {
+						   num = results[0].obj.num;
+						   $( es + "-id" ).val(results[0].obj.id);
+					   }
 				   });
 		},
 		focus: function( event, ui ) {
+			var input = document.getElementById(e + '-input');
+			var n = get_num(input.value);
+			t = get_name(input.value);
+
+			$( es + "-id" ).val( ui.item.obj.id );
+			$( es + "-num").val( n );
+
+			input.focus();
+			input.value = ui.item.value + ' ' + n;
+
+			if (ui.item.value.search(t) == 0) {
+				input.setSelectionRange(t.length, ui.item.value.length + 1);
+			}
 			return false;
 		},
 		change: function( event, ui ) {
-			var n = $( "#" + e + "-input" ).prop("value").split(/([0-9]+)$/)[1] || '';
-			$( "#" + e + "-num").val( n );
-		},
-		select: function( event, ui ) {
-			var n = $( "#" + e + "-input" ).prop("value").split(/([0-9]+)$/)[1] || '';
-			var k = {id: ui.item.obj.id, num: n};
-			ui.item.value += ' ' + n;
-			$( "#" + e + "-id" ).val( ui.item.obj.id );
-			$( "#" + e + "-num").val( n );
-			$( "#" + e + "-input" ).val( ui.item.value);
-
-			if (! validate_num (n, ui.item.obj.num)) {
-				console.log('invalid num', n, ui.item.obj.num);
-				return true;
+			var k = {num:get_num($( es + "-input" ).prop("value")),
+				 id:$( es + "-id" ).prop("value")};
+			$( es + "-num").val(k.num);
+			if (! validate (e)) {
+				$(es + '-input').animate({ backgroundColor: 'red' });
+				return false;
 			}
+
+			if (! validate_num (k.num, num)) {
+				$(es + '-input').animate({ backgroundColor: 'orange' });
+				return false;
+			}
+
+			$(es + '-input').animate({ backgroundColor: 'green' });
 			$.getJSON(request_pos_url(k), function (o) {
 				plotP(o, e);
 			});
+		},
+		select: function( event, ui ) {
+			return false;
 		},
 /*		search: function( event, ui ) {
 			console.log(event);
@@ -67,7 +106,7 @@ function xa_autoc(e) {
 		autoFocus: false,
 	});
 	a.data( "autocomplete" )._renderItem = function( ul, item ) {
-		t = $( "#" + e + "-input" ).prop("value");
+		t = $( es + "-input" ).prop("value");
 		var text = "<a>" + item.obj.name + "<br>" +
 			item.obj.type + " " + item.obj.num + "</a>"
 		var r = new RegExp(simple_escape(t), 'i');
