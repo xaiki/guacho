@@ -17,6 +17,7 @@ function get_name ( str ) {
 function validate_num (n, a) {
 	var i;
 	if (!n) return true;
+	if (!a) return false;
 
 	for (i = 0; i < a.length; i += 1) {
 		if (n >= a[i][0] && n <= a[i][1]) {
