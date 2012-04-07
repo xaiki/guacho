@@ -69,6 +69,7 @@ function xa_autoc(e) {
 
 			$( es + "-id" ).val( ui.item.obj.id );
 			$( es + "-num").val( n );
+			num = ui.item.obj.num;
 
 			input.focus();
 			input.value = ui.item.value + ' ' + n;
