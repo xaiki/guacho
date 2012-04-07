@@ -277,28 +277,19 @@ function request_pos_url (e) {
 function find() {
 	// Assign handlers immediately after making the request,
 	// and remember the jqxhr object for this request
-
-	var done = 2;
-	var res  = [];
-	D = done;
 	var from = {id :$( "#from-id" ).prop('value'),
 		    num:$( "#from-num").prop('value')};
 	var to   = {id :$( "#to-id"   ).prop('value'),
 		    num:$( "#to-num"  ).prop('value')};
 
-	panAB (markers.from, markers.to);
-
-	console.log('DEBUG', from, to, '\n');
-
 	if (! (from.id && from.num)) {
-		info ("weird from");
-		return;
+		return false;
 	}
 	if (! (to.id && to.num)) {
-		info ("weird to");
-		return;
+		return false;
 	}
 
+	panAB (markers.from, markers.to);
 	parrallel([from, to], request_pos_url, find2);
 }
 
