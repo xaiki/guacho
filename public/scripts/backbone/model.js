@@ -77,20 +77,30 @@ function xa_autoc(e) {
 			return false;
 		},
 		change: function( event, ui ) {
-			var k = {num:get_num($( es + "-input" ).prop("value")),
+			console.log('change');
+			var i = $( es + "-input" );
+			var v = i.prop("value");
+			var k = {num:get_num(v),
 				 id:$( es + "-id" ).prop("value")};
+
+			if (v.match(/^ *$/)) {
+				i.val(e);
+				i.animate({ backgroundColor: 'white' });
+				return false;
+			}
+
 			$( es + "-num").val(k.num);
 			if (! validate (e)) {
-				$(es + '-input').animate({ backgroundColor: 'red' });
+				i.animate({ backgroundColor: 'red' });
 				return false;
 			}
 
 			if (! validate_num (k.num, num)) {
-				$(es + '-input').animate({ backgroundColor: 'orange' });
+				i.animate({ backgroundColor: 'orange' });
 				return false;
 			}
 
-			$(es + '-input').animate({ backgroundColor: 'green' });
+			i.animate({ backgroundColor: 'green' });
 			$.getJSON(request_pos_url(k), function (o) {
 				plotP(o, e);
 			});
