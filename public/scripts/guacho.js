@@ -243,17 +243,17 @@ function trace_routeix(route) {
 }
 
 function show_route(route) {
-    var p = document.getElementById("info");
-    var buf = "";
-    var lg = route.planning;
-    lg.forEach(function(item) {
-	var index = routes.length;
-	routes.push(jQuery.parseJSON(item));
-	var dest = D = routes[index];
-	buf += '<button type="button" onclick="show_rec(' + index + ')">Show</button>';
-	buf += dest.tiempo + '---' + dest.services + "<br>\n";
-    });
-    p.innerHTML = buf;
+	var p = document.getElementById("info");
+	var buf = "";
+	var lg = route.planning;
+	routes = []
+	lg.forEach(function(item, i) {
+		routes.push(jQuery.parseJSON(item));
+		var dest = routes[i];
+		buf += '<button type="button" onclick="show_rec(' + i + ')">Show</button>';
+		buf += dest.tiempo + '---' + dest.services + "<br>\n";
+	});
+	p.innerHTML = buf;
 }
 
 function parrallel (requests, format, alldone) {
