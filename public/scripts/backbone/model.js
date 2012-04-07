@@ -44,6 +44,7 @@ function xa_autoc(e) {
 	var num;
 	var a = $(es + '-input').autocomplete({
 		source: function(request, response){
+			$(es + '-input').autocomplete( "option", "delay", 300 );
 			$(es + '-input').animate({ backgroundColor: "white" }, 500);
 			if (request.term == e) return;
 
@@ -77,6 +78,7 @@ function xa_autoc(e) {
 			return false;
 		},
 		change: function( event, ui ) {
+			$(es + '-input').autocomplete( "option", "delay", 0 );
 			console.log('change');
 			var i = $( es + "-input" );
 			var v = i.prop("value");
@@ -112,7 +114,8 @@ function xa_autoc(e) {
 			console.log(event);
 			return true;
 		},*/
-		minLength: 1,
+		minLength: 3,
+		delay: 0,
 		autoFocus: false,
 	});
 	a.data( "autocomplete" )._renderItem = function( ul, item ) {
