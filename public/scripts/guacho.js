@@ -68,22 +68,20 @@ function plot(map, a) {
     return marker
 }
 
-function panAB(a, b) {
-	if (!a || !b) {
+function pan_to_bounds(a) {
+	console.log (a);
+	if (!a) {
 		debug ("error, no markers");
 		return false;
 	}
 
-	var all = a.getPosition();
-	var bll = b.getPosition();
+	var b = new google.maps.LatLngBounds();
 
-	var b = new google.maps.LatLngBounds(all, bll);
-	if (b.isEmpty()) {
-		b = new google.maps.LatLngBounds(bll, all);
+	for (var i = 0, l = a.length; i < l; i++) {
+		b.extend (a[i].getPosition());
 	}
-	console.log(b, b.isEmpty(), all, bll);
 
-	map.panToBounds(b);
+	map.fitBounds(b);
 }
 
 function plotB(latlng) {
@@ -260,7 +258,7 @@ function show_route(route) {
 		var dest = routes[i];
 		buf += '<div class="ui-block-'+l[i%l.length]+'">';
 		buf += '<div id="route-bar-'+i+'" class="ui-bar ui-bar-e" style="height=70px" onclick="show_rec(' + i + ')">';
-		buf += dest.tiempo + ' minutos, con: ' + dest.services;
+		buf += dest.tiempo + ' minutos,<br>servicios: ' + dest.services;
 		buf += '</div>';
 		buf += '</div>';
 	});
@@ -304,7 +302,7 @@ function find() {
 		return false;
 	}
 
-	panAB (markers.from, markers.to);
+	pan_to_bounds ([markers.from, markers.to]);
 	parrallel([from, to], request_pos_url, find2);
 }
 
