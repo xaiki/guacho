@@ -1,18 +1,14 @@
-#application
+link(rel="stylesheet",href="css/basic.css",type="text/css")
+link(rel="stylesheet",href="http://code.jquery.com/mobile/latest/jquery.mobile.min.css")
+link(type="text/css", href="/javascript/jquery-ui-themes/cupertino/jquery.ui.all.min.css", rel="stylesheet")
 
+#application
   #info
   #debug
   #search
     div He... a donde vas guacho ?
-    form(onsubmit='find();', action='#')
-      -var is = ["from", "to"]
-      each i in is
-          input(type='text',   value='#{i}', id='#{i}-input')
-          input(type='hidden', id='#{i}-val')
-          input(type='hidden', id='#{i}-id')
-          input(type='hidden', id='#{i}-num')
-      input(type='submit', value='Submit')
-
+    include fromto.jade
+  #route
   div#map_canvas
      here goes map2
   script(type='text/javascript')

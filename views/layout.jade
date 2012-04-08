@@ -4,23 +4,21 @@ html
     title= title
     script(type='text/javascript', src='http://maps.googleapis.com/maps/api/js?key=AIzaSyD88LdEx981qEeT2MoYKcWeUClWYpuDlj8&sensor=false')
     script(type='text/javascript', src='/scripts/head.min.js')
-    link(rel='stylesheet',href='basic.css',type='text/css')
-    link(type="text/css", href="/javascript/jquery-ui-themes/cupertino/jquery.ui.all.min.css"
-", rel="stylesheet")
-
   body
 
     #content!= body
       script(type='text/javascript')
         head.js(
-            "/scripts/jquery.min.js",
+            {jquery:"http://code.jquery.com/jquery.min.js"},
             "/scripts/jquery-ui.min.js",
             "/nowjs/now.js",
             "/scripts/underscore-min.js",
             "/scripts/backbone-min.js",
             "/scripts/backbone/model.js",
+            "/scripts/util.js",
             {proj4js : "/scripts/proj4js/lib/proj4js-compressed.js"},
             {guacho  : "/scripts/guacho.js"}
           );
-    #license
-      a(href="http://www.gnu.org/licenses/agpl-3.0.html") AGPL-3.0
+    div#license(data-role='footer')
+      h4
+        a(href="http://www.gnu.org/licenses/agpl-3.0.html") AGPL-3.0

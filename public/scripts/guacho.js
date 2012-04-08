@@ -183,6 +183,8 @@ function show_rec(dn) {
 
 	var url = "http://recorridos.mapa.buenosaires.gob.ar/load_plan?trip_id=" + dest.id + "&callback=?";
 	$.getJSON(url, trace_route);
+	$('#route-bar-' + dn).toggleClass("ui-bar-e", 0);
+	$('#route-bar-' + dn).toggleClass("ui-bar-b", 1000);
 }
 
 function trace_route(route) {
@@ -243,30 +245,29 @@ function trace_routeix(route) {
 }
 
 function show_route(route) {
-	var p = document.getElementById("info");
+	var p = document.getElementById("route");
 	var buf;
 	var lg = route.planning;
 	routes = []
 
 	console.log ('show_route');
+	var l = ['a', 'b', 'c'];
 
-	buf = '<div id="show_accordion">';
+	buf = '<div class="ui-grid-b">';
 	lg.forEach(function(item, i) {
 		routes.push(jQuery.parseJSON(item));
 		var dest = routes[i];
-		buf += '<h3><a href="#">' + dest.tiempo + "', Services: " + dest.services + '</a></h3>';
-		buf += '<div>';
-		buf += '<button type="button" onclick="show_rec(' + i + ')">Show</button>';
-		buf += dest.tiempo + '---' + dest.services + "<br>\n";
+		buf += '<div class="ui-block-'+l[i%l.length]+'">';
+		buf += '<div id="route-bar-'+i+'" class="ui-bar ui-bar-e" style="height=70px" onclick="show_rec(' + i + ')">';
+		buf += dest.tiempo + '---' + dest.services;
+		buf += '</div>';
 		buf += '</div>';
 	});
 	buf += '</div>';
 	p.innerHTML = buf;
 
-	$('#show_accordion').accordion({
-		active: false,
-		autoHeight: false,
-	});
+	$('#route_collapsible a:first').click();
+	$('#para_collapsible a:first').click();
 }
 
 function parrallel (requests, format, alldone) {

@@ -24,7 +24,6 @@ var sys = require('sys'),
 
 var express = require('express'),
     sys = require('sys'),
-    app = module.exports = express.createServer(),
     models = require('./model'),
     Calle = models.Calle;
 
@@ -59,6 +58,12 @@ app.configure('production', function(){
 app.get('/', function(req, res){
 	res.render('index', {
 	    title: 'Home'
+	});
+});
+
+app.get('/m', function (req, res) {
+	res.render('mobile', {
+	    title: 'Mobile'
 	});
 });
 
