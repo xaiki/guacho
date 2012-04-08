@@ -185,6 +185,7 @@ function show_rec(dn) {
 	$.getJSON(url, trace_route);
 	$('#route-bar-' + dn).toggleClass("ui-bar-e", 0);
 	$('#route-bar-' + dn).toggleClass("ui-bar-b", 1000);
+	$('html, body').animate({scrollTop: '1000px'}, 1000);
 }
 
 function trace_route(route) {
