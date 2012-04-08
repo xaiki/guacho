@@ -91,7 +91,7 @@ function plotB(latlng) {
 	marker = new google.maps.Marker({
 		map:map,
 		draggable:true,
-		animation: google.maps.Animation.BOUNCE,
+		animation: google.maps.Animation.DROP,
 		position: latlng
 	});
 	return marker
