@@ -1,7 +1,7 @@
 -var is = ["from", "to"]
       each i in is
         label(for='${i}-input')#{i}:
-          input(type='text',   value='#{i}', id='#{i}-input')
+          input(type='text',   value='', id='#{i}-input')
           input(type='hidden', id='#{i}-id')
           input(type='hidden', id='#{i}-num')
       button(id='go_button', onclick='find();') Ok
