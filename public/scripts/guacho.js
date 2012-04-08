@@ -259,7 +259,7 @@ function show_route(route) {
 		var dest = routes[i];
 		buf += '<div class="ui-block-'+l[i%l.length]+'">';
 		buf += '<div id="route-bar-'+i+'" class="ui-bar ui-bar-e" style="height=70px" onclick="show_rec(' + i + ')">';
-		buf += dest.tiempo + '---' + dest.services;
+		buf += dest.tiempo + ' minutos, con: ' + dest.services;
 		buf += '</div>';
 		buf += '</div>';
 	});
