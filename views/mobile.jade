@@ -2,29 +2,27 @@ link(rel="stylesheet",href="css/basic.css",type="text/css")
 link(rel="stylesheet",href="http://code.jquery.com/mobile/1.0a3/jquery.mobile-1.0a3.min.css",type="text/css")
 link(rel="stylesheet",href="css/jquery-ui-min-min.css",type="text/css")
 
-
-#application
-  div#search(data-role='page',data-theme='a')
-    div#header(data-role='header')
-      h1 He... a donde vas guacho ?
-    div#para_collapsible(data-role='collapsible',data-collapsed='false',data-mini='true')
-      h2 para
-      para
-      include fromto.jade
-    div#route_collapsible(data-role='collapsible',data-collapsed='true',data-mini='true')
-      h2 Route
-      #route_col
-        #route
-        | In order to find the way, you must first, look for the way
-    div#mapcollapsible(data-role='collapsible',data-collapsed='false',data-mini='true')
-      h2 Teh Map
-      div#map_canvas
-       here goes map2
-    script(type='text/javascript')
-      head.ready('jquery', function() {
-          head.js({jquerym:"http://code.jquery.com/mobile/latest/jquery.mobile.min.js"});
-          head.ready('jquerym', function() {
-            var auto = new AutocompleterAppView();
-            initialize();
-        });
+div#search(data-role='page',data-theme='a')
+  div#header(data-role='header')
+    h1 He... a donde vas guacho ?
+  div#para_collapsible(data-role='collapsible',data-collapsed='false',data-mini='true')
+    h2 para
+    para
+    include fromto.jade
+  div#route_collapsible(data-role='collapsible',data-collapsed='true',data-mini='true')
+    h2 Route
+    #route_col
+      #route
+      | In order to find the way, you must first, look for the way
+  div#mapcollapsible(data-role='collapsible',data-collapsed='false',data-mini='true')
+    h2 Teh Map
+    div#map_canvas
+     here goes map2
+  script(type='text/javascript')
+    head.ready('jquery', function() {
+        head.js({jquerym:"http://code.jquery.com/mobile/latest/jquery.mobile.min.js"});
+        head.ready('jquerym', function() {
+          var auto = new AutocompleterAppView();
+          initialize();
       });
+    });
