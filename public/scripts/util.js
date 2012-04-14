@@ -50,13 +50,9 @@ function xa_autoc(e) {
 	var t = '';
 	var num;
 	var input = $(es + '-input');
-	var default_style;
-	console.log (default_style);
 	input.autocomplete({
 		source: function(request, response){
 			$(es + '-input').autocomplete( "option", "delay", 300 );
-			if (default_style)
-				$(es + '-input').animate({ backgroundColor: default_style }, 500);
 			if (request.term == e) return;
 
 			now.search(request, 10,
@@ -85,40 +81,44 @@ function xa_autoc(e) {
 			input.focus();
 			input.value = ui.item.value + ' ' + n;
 
-			if (ui.item.value.search(t) == 0) {
-				input.setSelectionRange(t.length, ui.item.value.length + 1);
-			}
 			return false;
 		},
 		change: function( event, ui ) {
 			$(es + '-input').autocomplete( "option", "delay", 0 );
+
+			if ($(es + '-input').prop("auto-loc") == true) {
+				i.addClass('green');
+				$.getJSON(request_pos_url(k), function (o) {
+					plotP(o, e);
+				});
+
+			}
+
 			console.log('change');
 			var i = $( es + "-input" );
 			var v = i.prop("value");
 			var k = {num:get_num(v),
 				 id:$( es + "-id" ).prop("value")};
 
-			if (!default_style)
-				default_style = get_style (e + '-input', 'background-color');
 
 			if (v.match(/^ *$/)) {
 				i.val(e);
-				i.animate({ backgroundColor: default_style });
+				i.addClass('sel-ok', 1000);
 				return false;
 			}
 
 			$( es + "-num").val(k.num);
 			if (! validate (e)) {
-				i.animate({ backgroundColor: 'red' });
+				i.addClass('sel-nok', 1000);
 				return false;
 			}
 
 			if (! validate_num (k.num, num)) {
-				i.animate({ backgroundColor: 'orange' });
+				i.addClass('sel-warn', 1000);
 				return false;
 			}
 
-			i.animate({ backgroundColor: 'green' });
+			i.addClass('sel-ok', 1000);
 			$.getJSON(request_pos_url(k), function (o) {
 				plotP(o, e);
 			});

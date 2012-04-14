@@ -24,6 +24,7 @@ Proj4js.defs["SR-ORG:7124"] = "+proj=tmerc +lat_0=-34.6297166 +lon_0=-58.4627 +k
 Proj4js.reportError = function(msg) {alert(msg);};
 
 var map;
+var gl = null;
 var markers = {};
 var myloc = new Proj4js.Point (-58.3803787, -34.6136284);
 var toloc = new Proj4js.Point (-58.4627,-34.6297166);
@@ -46,16 +47,6 @@ function info(msg) {
     var p = document.getElementById("debug");
     p.innerHTML = msg + "<br>\n";
 }
-
-function get_from_ba_hack () {
-
-}
-
-$(function () {
-    $( "#tags" ).autocomplete({
-	source: get_from_ba_hack
-	});
-});
 
 function plot(map, a) {
     var latlng = new google.maps.LatLng(a.y, a.x);
@@ -114,6 +105,11 @@ function plotP(e, name) {
 }
 
 function initialize() {
+/*
+	$('input.loc').wrap('<span class="deleteicon" />').after($('<span/>').click(function() {
+		alert('click');
+	}));
+*/
 	var myOptions = {
 		center: new google.maps.LatLng(myloc.y, myloc.x),
 		zoom: 15,
@@ -121,41 +117,101 @@ function initialize() {
 	};
 	map = new google.maps.Map(document.getElementById("map_canvas"),
 				  myOptions);
-	getLoc(map);
 }
 
 function displayError(positionError) {
     alert("error");
 }
 
-function getLoc(map) {
-    var gl;
-    var marker;
-
-    try {
-	if (typeof navigator.geolocation === 'undefined'){
-	    gl = google.gears.factory.create('beta.geolocation');
-	} else {
-	    gl = navigator.geolocation;
+function loc_button_clicked(o) {
+	o.dir = o.getAttribute('value');
+	console.log('clicked');
+	if ($('#' + o.dir + '-input').prop('auto-loc') != true) {
+		return loc_button_on(o)
 	}
-    } catch(e) {return debug ("e");}
+	return loc_button_off(o);
+}
 
-    if (!gl) {
-	return debug("Geolocation services are not supported by your web browser.");
-    }
-    gl.getCurrentPosition(function handle(position) {
-	myloc = new Proj4js.Point(position.coords.longitude, position.coords.latitude);
-	var latlng = new google.maps.LatLng (position.coords.latitude, position.coords.longitude);
-	map.panTo(latlng);
-	marker = new google.maps.Marker({
-	    map:map,
-	    draggable:true,
-	    animation: google.maps.Animation.DROP,
-	    position: latlng
+function loc_button_off(o) {
+	$('#' + o.dir + '-input').val(o.dir);
+	$('#' + o.dir + '-input').prop('auto-loc', false);
+	o.classList.remove('on');
+	if (o.marker) {
+		o.marker.setMap(null);
+	}
+
+	$('#' + o.dir + '-input').removeClass('sel-warn');
+	$('#' + o.dir + '-input').removeClass('sel-nok');
+	$('#' + o.dir + '-input').removeClass('sel-ok');
+}
+
+function loc_button_on(o) {
+	console.log(o);
+	var other = (o.dir == 'from')?'to':'from';
+	console.log($('#' + o.dir + '-input').prop('auto-loc'));
+	if ($('#' + other + '-input').prop('auto-loc')) {
+		loc_button_clicked(document.getElementById('my-loc-' + other));
+	}
+	$('#' + o.dir + '-input').val(o.dir + ' Current Location');
+	$('#' + o.dir + '-input').prop('auto-loc', true);
+	o.oldHTML = o.innerHTML;
+	o.innerHTML += '<span class="loc-button-spinner" />';
+	o.classList.add('loading');
+	getLoc(o, function (o, loc) {
+		o.classList.remove('loading');
+		o.classList.add('on');
+		console.log(loc);
+		o.innerHTML = o.oldHTML;
+		o.setAttribute('status', 'on');
+		$('#' + o.dir + '-input').removeClass('sel-warn');
+		$('#' + o.dir + '-input').removeClass('sel-nok');
+		$('#' + o.dir + '-input').addClass('sel-ok');
+	}, function (o, err) {
+		console.log(err);
+		o.classList.remove('loading');
+		o.innerHTML = o.oldHTML;
 	});
+}
 
-	//	    google.maps.event.addListener(marker, 'click', toggleBounce);
-    });
+function getLoc(arg, success, failure) {
+	if (!gl) {
+		try {
+			if (typeof navigator.geolocation === 'undefined'){
+				gl = google.gears.factory.create('beta.geolocation');
+			} else {
+				gl = navigator.geolocation;
+			}
+		} catch(e) {return false;}
+
+		if (!gl) {
+			alert("Geolocation services are not supported by your web browser.");
+			return false;
+		}
+	}
+	gl.getCurrentPosition(function handle(position) {
+		success(arg, position);
+		myloc = new Proj4js.Point(position.coords.longitude, position.coords.latitude);
+		var latlng = new google.maps.LatLng (position.coords.latitude, position.coords.longitude);
+		map.panTo(latlng);
+		if (! markers[arg.dir]) {
+			markers[arg.dir] = new google.maps.Marker({
+				map:map,
+				draggable:true,
+				animation: google.maps.Animation.DROP,
+				position: latlng
+			});
+		} else {
+			var marker = markers[arg.dir];
+			marker.setMap(map);
+			marker.setPosition(latlng);
+			marker.setAnimation(google.maps.Animation.DROP);
+		}
+		console.log(latlng);
+	}, function error(err) {
+		failure(arg, err);
+	}
+	);
+	return gl;
 }
 
 function longlat_to_loc (P) {
@@ -170,6 +226,13 @@ function pt_to_latlng (Pt) {
 	var r = new google.maps.LatLng (rPt.y, rPt.x);
 	return r;
 }
+
+function latlng_to_pt (a) {
+	var rPt = new Proj4js.Point(a.lng(), a.lat());
+	Proj4js.transform(sourceprj, destprj, rPt);
+	return rPt;
+}
+
 
 function loc_to_latlng (loc) {
     var a = loc.split(',');
@@ -269,12 +332,16 @@ function show_route(route) {
 	$('#para_collapsible a:first').click();
 }
 
-function parrallel (requests, format, alldone) {
+function json_call(f, e, cb) {
+	return $.getJSON(f(e), cb);
+}
+
+function parrallel (requests, action, alldone) {
 	var done = requests.length;
 	var res  = [];
 
 	$(requests).each(function (i, e) {
-		$.getJSON(format(e), function(o) {
+		action(e, function(o) {
 			res[i] = o;
 			console.log (done, i, o, res[i]);
 			done -= 1;
@@ -287,28 +354,47 @@ function request_pos_url (e) {
 	return "http://ws.usig.buenosaires.gob.ar/geocoder/2.2/geocoding/?callback=?&cod_calle=" + e.id + "&altura=" + e.num;
 }
 
-function find() {
-	// Assign handlers immediately after making the request,
-	// and remember the jqxhr object for this request
-	var from = {id :$( "#from-id" ).prop('value'),
-		    num:$( "#from-num").prop('value')};
-	var to   = {id :$( "#to-id"   ).prop('value'),
-		    num:$( "#to-num"  ).prop('value')};
-
-	if (! (from.id && from.num)) {
-		return false;
-	}
-	if (! (to.id && to.num)) {
-		return false;
-	}
-
-	pan_to_bounds ([markers.from, markers.to]);
-	parrallel([from, to], request_pos_url, find2);
+function curry (fn) {
+	var slice = Array.prototype.slice,
+        args = slice.apply(arguments, [1]);
+	return function () {
+		return fn.apply(null, args.concat(slice.apply(arguments)));
+	};
 }
 
-function find2(a) {
-	var from = a[0];
-	var to   = a[1];
+function find() {
+	var a = ['from', 'to'];
+	var reqs = [];
+	for (var i = 0; i < a.length; i++) {
+		var e = a[i];
+		if ($('#' + e + '-input').prop('auto-loc')) {
+			$[e] = latlng_to_pt(markers[e].getPosition());
+			break;
+		}
 
-	$.getJSON('http://recorridos.mapa.buenosaires.gob.ar/recorridos_transporte?callback=?&origen=' + from.x + "%2C" + from.y + "&destino=" + to.x + "%2C" + to.y + "&origen_calles=3085&destino_calles=17132&origen_calle_altura=3599&destino_calle_altura=409&opciones_caminata=800&opciones_medios_colectivo=true&opciones_medios_tren=true&opciones_medios_subte=true", show_route);
+		v = {id :$("#" + e + "-id").prop('value'),
+		     num:$("#" + e + "-num").prop('value'),
+		    dir:a[i]};
+		if (! (v.id && v.num)) {
+			console.log('not enough data on' + e);
+			return false
+		}
+		reqs.push(v);
+	}
+	console.log('reqs', reqs)
+	pan_to_bounds ([markers.from, markers.to]);
+	parrallel(reqs, curry(json_call, request_pos_url),
+		  curry(store_and_find, reqs));
+}
+
+
+function store_and_find(a, r) {
+
+	if (a.length != r.length) console.log(this, "error size mismatch");
+	$(a).each(function(i, e) {
+		$[e.dir] = r[i];
+	});
+
+	console.log($.from.x, $.from.y, $.to.x, $.to.y);
+	$.getJSON('http://recorridos.mapa.buenosaires.gob.ar/recorridos_transporte?callback=?&origen=' + $.from.x + "%2C" + $.from.y + "&destino=" + $.to.x + "%2C" + $.to.y + "&origen_calles=3085&destino_calles=17132&origen_calle_altura=3599&destino_calle_altura=409&opciones_caminata=800&opciones_medios_colectivo=true&opciones_medios_tren=true&opciones_medios_subte=true", show_route);
 }

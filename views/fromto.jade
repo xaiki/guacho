@@ -1,7 +1,8 @@
 -var is = ["from", "to"]
       each i in is
-        label(for='${i}-input')#{i}:
-          input(type='text',   value='', id='#{i}-input')
+        div(data-role='controlgroup', data-type='horizontal')
+          span(id='my-loc-#{i}', class='loc-button', onclick='loc_button_clicked(this)', value='#{i}', status='off')
+          input(type='search', id='#{i}-input', name='#{i}-input', class='loc-input ui-body-a ui-input-text', value='#{i}', data-role='none')
           input(type='hidden', id='#{i}-id')
           input(type='hidden', id='#{i}-num')
       button(id='go_button', onclick='find();') Ok

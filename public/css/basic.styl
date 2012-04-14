@@ -1,5 +1,12 @@
-input
-  width 40%
+.sel-ok
+  background green
+
+.sel-nok
+  background red
+
+.sel-warn
+  background orange
+
 
 #map_canvas
   float left
@@ -10,3 +17,39 @@ input
 
 .ui-collapsible
   overflow hidden
+
+#go_button
+  width 100%
+
+floating_button()
+  float left
+  display block
+  width arguments
+  height arguments
+  margin-top 0px
+  margin-bottom 10px
+
+div ui-input-search
+  float right
+
+.loc-entry
+  width 100%
+
+button_size = 22px
+.loc-button
+  floating_button(button_size)
+  background: url('http://maps.gstatic.com/mapfiles/mapcontrols3d7.png') -22px -428px
+
+.loc-button.on
+  floating_button(button_size)
+  background: url('http://maps.gstatic.com/mapfiles/my_location2.png') 0 -22px
+
+.loc-button.loading
+  floating_button(button_size)
+  background: url('http://maps.gstatic.com/mapfiles/my_location2.png')
+
+.loc-button-spinner
+  floating_button(10px)
+  background: url('http://maps.gstatic.com/mapfiles/my_location_button_spinner.gif')
+  margin-left 6px
+  margin-top 4px
