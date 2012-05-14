@@ -85,6 +85,11 @@ function xa_autoc(e) {
 		},
 		change: function( event, ui ) {
 			$(es + '-input').autocomplete( "option", "delay", 0 );
+			var i = $( es + "-input" );
+			var v = i.prop("value");
+			var k = {num:get_num(v),
+				 id:$( es + "-id" ).prop("value")};
+
 
 			if ($(es + '-input').prop("auto-loc") == true) {
 				i.addClass('green');
@@ -95,11 +100,6 @@ function xa_autoc(e) {
 			}
 
 			console.log('change');
-			var i = $( es + "-input" );
-			var v = i.prop("value");
-			var k = {num:get_num(v),
-				 id:$( es + "-id" ).prop("value")};
-
 
 			if (v.match(/^ *$/)) {
 				i.val(e);
