@@ -254,8 +254,8 @@ function trace_route(route) {
 	var gml;
 	for (p in route.plan) {
 		gml = "<gml xmlns:gml=http://www.opengis.net/gml xmlns:gml=http://www.opengis.net/gml>";
-		gml .= route.plan[p].gml;
-		gml .= "</gml>";
+		gml += route.plan[p].gml;
+		gml += "</gml>";
 		var dom = new DOMParser().parseFromString(gml,
 							  "text/xml");
 		if (! dom.getElementsByTagName ("coordinates" ).lenght) {
