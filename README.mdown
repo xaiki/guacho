@@ -26,9 +26,15 @@
 1. Check out this repository
 2. Open the terminal
 3. Change into the checkd out directory
-4. npm install ( Install the required dependencies )
+4. npm install -d
 5. node app.js
+
+## Populating the DB
+
+Go to http://localhost:3000/create
+to populate the original mongodb,
+warning, this is dumb, if you do it more than once you'll fill your DB with crap.
 
 ## How to use
 
-After that you should only open http://localhost:3000 to have a look at this demo application.
+After that you should only open http://localhost:3000 to have a look arround.

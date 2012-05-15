@@ -29,8 +29,8 @@ var markers = {};
 var myloc = new Proj4js.Point (-58.3803787, -34.6136284);
 var toloc = new Proj4js.Point (-58.4627,-34.6297166);
 var dbgs = [];
-var sourceprj = new Proj4js.Proj('WGS84')
-var destprj   = new Proj4js.Proj('SR-ORG:7124')
+var sourceprj = new Proj4js.Proj('WGS84');
+var destprj   = new Proj4js.Proj('SR-ORG:7124');
 //var hax_proxy = 'core.evilgiggle.com:8124/';
 //var hax_proxy = 'localhost:8124/';
 var hax_proxy = '';
@@ -83,7 +83,7 @@ function plotB(latlng) {
 		animation: google.maps.Animation.DROP,
 		position: latlng
 	});
-	return marker
+	return marker;
 }
 
 function plotA(a) {
@@ -127,7 +127,7 @@ function loc_button_clicked(o) {
 	o.dir = o.getAttribute('value');
 	console.log('clicked');
 	if ($('#' + o.dir + '-input').prop('auto-loc') != true) {
-		return loc_button_on(o)
+		return loc_button_on(o);
 	}
 	return loc_button_off(o);
 }
@@ -253,7 +253,7 @@ function trace_route(route) {
 	D = route;
 	var gml;
 	for (p in route.plan) {
-		gml = "<gml xmlns:gml=http://www.opengis.net/gml xmlns:gml=http://www.opengis.net/gml>";
+		gml = '<gml xmlns="http://www.opengis.net/gml" xmlns:gml="http://www.opengis.net/gml">';
 		gml += route.plan[p].gml;
 		gml += "</gml>";
 		var dom = new DOMParser().parseFromString(gml,
@@ -269,8 +269,8 @@ function trace_route(route) {
 		if (a.length < 2) {
 			console.log ('not long enough');
 		} else {
-			var la = []
-			while (b = a.pop()) {
+			var la = [];
+			while ((b = a.pop())) {
 				la.push(loc_to_latlng(b));
 			}
 			var color = "#FF0000";
@@ -312,7 +312,7 @@ function show_route(route) {
 	var p = document.getElementById("route");
 	var buf;
 	var lg = route.planning;
-	routes = []
+	routes = [];
 
 	console.log ('show_route');
 	var l = ['a', 'b', 'c'];
