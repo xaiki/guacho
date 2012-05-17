@@ -349,11 +349,26 @@ function trace_routeix(route) {
     }
 }
 
+function cleanup_old_routes() {
+	var t, r;
+	while (r = routes.pop()) {
+		if (r.traces) {
+			while (t = r.traces.pop()) {
+				t.setMap(null);
+				delete(t);
+			}
+			delete(t);
+		}
+		delete(r);
+	}
+}
+
 function show_route(route) {
 	var p = document.getElementById("route");
 	var buf;
 	var lg = route.planning;
-	routes = [];
+
+	cleanup_old_routes();
 
 	console.log ('show_route');
 	var l = ['a', 'b', 'c'];
