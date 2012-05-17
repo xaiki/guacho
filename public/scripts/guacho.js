@@ -260,12 +260,22 @@ function trace_route(route) {
 		gml += "</gml>";
 		var dom = new DOMParser().parseFromString(gml,
 							  "text/xml");
-		if (! dom.getElementsByTagName ("coordinates" ).lenght) {
-			console.log (gml,' no coord');
-		}
 
-		var coord = dom.getElementsByTagName ("coordinates" )[0].textContent;
-		var type = dom.getElementsByTagName ("type" )[0].textContent;
+		try {
+			if (! dom.getElementsByTagName ("coordinates" ).lenght) {
+				console.log (gml,' no coord');
+			}
+
+			if (! dom.getElementsByTagName ("coordinates" )[0].hasOwnProperty('textContent'))
+				continue;
+			var coord = dom.getElementsByTagName ("coordinates" )[0].textContent;
+			if (! dom.getElementsByTagName ("type" )[0].hasOwnProperty('textContent'))
+				continue;
+			var type = dom.getElementsByTagName ("type" )[0].textContent;
+		}
+		catch (TypeError) {
+			continue;
+		}
 		var a = coord.split(' ');
 
 		if (a.length < 2) {
