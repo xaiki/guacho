@@ -244,11 +244,10 @@ function loc_to_latlng (loc) {
 function show_rec(dn) {
 	var dest = routes[dn];
 
-	var url = "http://recorridos.mapa.buenosaires.gob.ar/load_plan?trip_id=" + dest.id + "&callback=?";
-	$.getJSON(url, trace_route);
 	$('#route-bar-' + dn).toggleClass("ui-bar-e", 0);
 	$('#route-bar-' + dn).toggleClass("ui-bar-b", 0);
 	$('html, body').animate({scrollTop: '1000px'}, 0);
+	var url = "http://recorridos.mapa.buenosaires.gob.ar/load_plan?trip_id=" + dest.id + "&callback=?";
 }
 
 function trace_route(route) {
