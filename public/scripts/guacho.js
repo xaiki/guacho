@@ -248,11 +248,14 @@ function show_rec(dn) {
 	$('#route-bar-' + dn).toggleClass("ui-bar-b", 0);
 	$('html, body').animate({scrollTop: '1000px'}, 0);
 	var url = "http://recorridos.mapa.buenosaires.gob.ar/load_plan?trip_id=" + dest.id + "&callback=?";
+	var jqxhr = $.getJSON(url, trace_route);
+	jqxhr.xaid = dn;
 }
 
-function trace_route(route) {
+function trace_route(route, s, jqxhr) {
 	D = route;
 	var gml;
+	var traces = [];
 	for (p in route.plan) {
 		gml = '<gml xmlns="http://www.opengis.net/gml" xmlns:gml="http://www.opengis.net/gml">';
 		gml += route.plan[p].gml;
@@ -301,8 +304,12 @@ function trace_route(route) {
 			strokeWeight: 2
 		});
 		path.setMap(map);
+		traces.push(path);
 		console.log (p, '--', type ,' --> ',coord);
 	}
+
+	routes[jqxhr.xaid].traces = traces;
+	routes[jqxhr.xaid].showing = true;
 }
 
 function trace_routeix(route) {
