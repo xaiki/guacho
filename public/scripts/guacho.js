@@ -280,28 +280,28 @@ function trace_route(route) {
 
 		if (a.length < 2) {
 			console.log ('not long enough');
-		} else {
-			var la = [];
-			while ((b = a.pop())) {
-				la.push(loc_to_latlng(b));
-			}
-			var color = "#FF0000";
-			if (type == 'subway') {
-				color = "#00FF00";
-			} else if (type == 'walk') {
-				color = "#0000FF";
-			} else if (route.plan[p].type == 'Street') {
-				color = "#00FFFF";
-			} else if (route.plan[p].type == 'Bus') {
-				color = "#FF00FF";
-			}
-			var path = new google.maps.Polyline ({
-				path: la,
-				strokeColor: color,
-				strokeWeight: 2
-			});
-			path.setMap(map);
+			continue;
 		}
+		var la = [];
+		while ((b = a.pop())) {
+			la.push(loc_to_latlng(b));
+		}
+		var color = "#FF0000";
+		if (type == 'subway') {
+			color = "#00FF00";
+		} else if (type == 'walk') {
+			color = "#0000FF";
+		} else if (route.plan[p].type == 'Street') {
+			color = "#00FFFF";
+		} else if (route.plan[p].type == 'Bus') {
+			color = "#FF00FF";
+		}
+		var path = new google.maps.Polyline ({
+			path: la,
+			strokeColor: color,
+			strokeWeight: 2
+		});
+		path.setMap(map);
 		console.log (p, '--', type ,' --> ',coord);
 	}
 }
