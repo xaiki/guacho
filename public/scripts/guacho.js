@@ -69,6 +69,8 @@ function pan_to_bounds(a) {
 	var b = new google.maps.LatLngBounds();
 
 	for (var i = 0, l = a.length; i < l; i++) {
+		if (! a[i])
+			break;
 		b.extend (a[i].getPosition());
 	}
 
