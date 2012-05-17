@@ -247,9 +247,32 @@ function show_rec(dn) {
 	$('#route-bar-' + dn).toggleClass("ui-bar-e", 0);
 	$('#route-bar-' + dn).toggleClass("ui-bar-b", 0);
 	$('html, body').animate({scrollTop: '1000px'}, 0);
+
+	if (dest.traces) {
+		if (! dest.showing) /* we have the route cached */
+			return trace_route_cached (dest);
+		return hide_route(dest);
+	}
+
 	var url = "http://recorridos.mapa.buenosaires.gob.ar/load_plan?trip_id=" + dest.id + "&callback=?";
 	var jqxhr = $.getJSON(url, trace_route);
 	jqxhr.xaid = dn;
+}
+
+function trace_route_cached(route) {
+	console.log("trace_route_cached", route);
+	$(route.traces).each(function (i, t) {
+		t.setMap(map);
+	});
+	route.showing = true;
+}
+
+function hide_route(route) {
+	console.log("hide_route", route);
+	$(route.traces).each(function (i, t) {
+		t.setMap(null);
+	});
+	route.showing = false;
 }
 
 function trace_route(route, s, jqxhr) {
